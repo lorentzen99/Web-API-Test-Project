@@ -1,3 +1,4 @@
+using api.Dtos.Comment;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
@@ -34,7 +35,7 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            return Ok(comment);
+            return Ok(comment.ToCommentDto());
         }
 
         [HttpPost]
@@ -45,9 +46,9 @@ namespace api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] Comment comment)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto commentDto)
         {
-            var commentModel = await _commentRepo.UpdateAsync(id, comment);
+            var commentModel = await _commentRepo.UpdateAsync(id, commentDto);
 
             if (commentModel == null)
             {
