@@ -1,4 +1,3 @@
-using api.Dtos.Comment;
 using api.Models;
 
 namespace api.Interfaces
