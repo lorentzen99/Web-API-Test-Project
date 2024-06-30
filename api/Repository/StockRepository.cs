@@ -17,21 +17,6 @@ namespace api.Repository
             _context = context;
         }
 
-        public async Task<Stock> CreateAsync(Stock stockModel)
-        {
-            await _context.Stocks.AddAsync(stockModel);
-            await _context.SaveChangesAsync();
-            return stockModel;
-        }
-
-        public async Task<Stock?> DeleteAsync(int id)
-        {
-            var stockModel = await _context.Stocks.FirstOrDefaultAsync(s => s.Id == id) ?? throw new KeyNotFoundException(StockNotFound);
-            _context.Stocks.Remove(stockModel);
-            await _context.SaveChangesAsync();
-            return stockModel;
-        }
-
         public async Task<List<Stock>> GetAllAsync(QueryObject query)
         {
             var stocks =  _context.Stocks.Include(c => c.Comments).AsQueryable();
@@ -58,9 +43,24 @@ namespace api.Repository
             return await stocks.Skip(skipNumber).Take(query.PageSize).ToListAsync();
         }
 
+        public async Task<Stock?> DeleteAsync(int id)
+        {
+            var stockModel = await _context.Stocks.FirstOrDefaultAsync(s => s.Id == id) ?? throw new KeyNotFoundException(StockNotFound);
+            _context.Stocks.Remove(stockModel);
+            await _context.SaveChangesAsync();
+            return stockModel;
+        }
+
         public async Task<Stock?> GetByIdAsync(int id)
         {
             return await _context.Stocks.Include(c => c.Comments).FirstOrDefaultAsync(i =>  i.Id == id) ?? throw new KeyNotFoundException(StockNotFound);
+        }
+        
+        public async Task<Stock> CreateAsync(Stock stockModel)
+        {
+            await _context.Stocks.AddAsync(stockModel);
+            await _context.SaveChangesAsync();
+            return stockModel;
         }
 
         public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto)
